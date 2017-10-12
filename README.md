@@ -1,6 +1,5 @@
-angular-registration-login-example
-==============================
-
 AngularJS User Registration and Login Example
 
-To see a demo and further details go to http://jasonwatmore.com/post/2015/03/10/AngularJS-User-Registration-and-Login-Example.aspx
+*NOTE*
+This is a modified version by Dario Nahuel Rodriguez (2017)
+https://github.com/DarioNahuel/angular-registration-login-example

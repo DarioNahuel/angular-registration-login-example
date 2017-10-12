@@ -12,7 +12,8 @@
 
         service.GetAll = GetAll;
         service.GetById = GetById;
-        service.GetByUsername = GetByUsername;
+        service.GetByEmail = GetByEmail;
+        service.GetByAccount = GetByAccount;
         service.Create = Create;
         service.Update = Update;
         service.Delete = Delete;
@@ -33,9 +34,19 @@
             return deferred.promise;
         }
 
-        function GetByUsername(username) {
+        function GetByEmail(eMail) {
             var deferred = $q.defer();
-            var filtered = $filter('filter')(getUsers(), { username: username });
+            var filtered = $filter('filter')(getUsers(), { eMail: eMail });
+            var user = filtered.length ? filtered[0] : null;
+            deferred.resolve(user);
+            return deferred.promise;
+        }
+
+        function GetByAccount(account) {
+            var deferred = $q.defer();
+            var filtered = $filter('filter')(getUsers(), function(value, index, array) {
+              return (typeof account === 'string') ? value.eMail == account || value.id == account : value.eMail == account.eMail || value.id == account.id;
+            });
             var user = filtered.length ? filtered[0] : null;
             deferred.resolve(user);
             return deferred.promise;
@@ -46,17 +57,12 @@
 
             // simulate api call with $timeout
             $timeout(function () {
-                GetByUsername(user.username)
-                    .then(function (duplicateUser) {
-                        if (duplicateUser !== null) {
-                            deferred.resolve({ success: false, message: 'Username "' + user.username + '" is already taken' });
+                GetByAccount(user)
+                    .then(function (duplicateAccount) {
+                        if (duplicateAccount !== null) {
+                            deferred.resolve({ success: false, message: 'E-mail "' + user.eMail + '" or ID "' + user.id + '") is already taken' });
                         } else {
-                            var users = getUsers();
-
-                            // assign id
-                            var lastUser = users[users.length - 1] || { id: 0 };
-                            user.id = lastUser.id + 1;
-
+                          var users = getUsers();
                             // save to local storage
                             users.push(user);
                             setUsers(users);
